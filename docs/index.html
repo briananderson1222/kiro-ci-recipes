@@ -166,6 +166,20 @@
         </tbody>
       </table>
 
+      <h2>Kiro Headless Setup</h2>
+      <p>
+        Kiro CLI headless mode uses the <code>KIRO_API_KEY</code> environment variable instead of
+        browser login. Generate an API key from Kiro, add it to GitHub Actions as a repository secret
+        named <code>KIRO_API_KEY</code>, then install the recipes you want.
+      </p>
+      <pre><code>export KIRO_API_KEY=...
+kiro-cli chat --no-interactive --trust-tools=read,grep "Summarize this repository"</code></pre>
+      <p>
+        Official docs:
+        <a href="https://kiro.dev/docs/cli/headless/">Kiro headless mode</a> and
+        <a href="https://kiro.dev/docs/cli/authentication/">Kiro CLI authentication</a>.
+      </p>
+
       <h2>Shift Left Locally</h2>
       <p>
         Most packs install scripts that can run before CI. Use them to review your current diff,

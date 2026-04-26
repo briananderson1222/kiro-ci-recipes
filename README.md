@@ -12,6 +12,24 @@ Headless Kiro requires `KIRO_API_KEY` in the environment. In GitHub Actions, sto
 
 The sample app in `src/` is intentionally flawed so the workflows have concrete review material.
 
+## Kiro Headless Setup
+
+Kiro CLI headless mode runs without a browser login when `KIRO_API_KEY` is set. See the official [Kiro headless mode docs](https://kiro.dev/docs/cli/headless/) and [authentication docs](https://kiro.dev/docs/cli/authentication/) for the current API key setup flow.
+
+For GitHub Actions:
+
+1. Generate a Kiro API key from your Kiro account settings.
+2. In your target repository, open Settings -> Secrets and variables -> Actions.
+3. Add a repository secret named `KIRO_API_KEY`.
+4. Install one or more recipes from this catalog.
+
+Minimal local smoke test:
+
+```bash
+export KIRO_API_KEY=...
+kiro-cli chat --no-interactive --trust-tools=read,grep "Summarize this repository"
+```
+
 ## Catalog
 
 | Use case | Authority | What it does | Install |
