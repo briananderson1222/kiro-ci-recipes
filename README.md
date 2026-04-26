@@ -139,11 +139,11 @@ Review workflows use read-only Kiro tools with `--trust-tools=read,grep`. They d
 
 Forked PRs and Dependabot runs may not receive `KIRO_API_KEY` or write-capable tokens. Treat those as repository policy decisions: skip Kiro review, use the manual artifact workflow after maintainer review, or run from a trusted branch.
 
-The demo workflows use Kiro's official installer for readability and print `kiro-cli --version` before review execution. Production pipelines should pin or verify the CLI installer, or install Kiro from an approved internal source.
+The demo workflows use Kiro's official installer for readability and print `kiro-cli --version` before review execution. Production pipelines should pin or verify the CLI installer, or install Kiro from an approved package source.
 
-## Prototype Lessons
+## Design Lessons
 
-This catalog was shaped by an earlier `feat/kiro-code-review` prototype. The useful ideas were kept as patterns; the risky parts were turned into guardrails.
+This catalog keeps reusable AI-in-CI patterns while making risky workflow behaviors explicit guardrails.
 
 Patterns worth reusing:
 
