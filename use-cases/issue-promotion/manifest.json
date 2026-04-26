@@ -1,0 +1,19 @@
+{
+  "id": "issue-promotion",
+  "title": "Promote Review Finding to Issue",
+  "authority": "issue-write",
+  "requires": ["GH_TOKEN"],
+  "permissions": {
+    "contents": "read",
+    "issues": "write",
+    "pull-requests": "write"
+  },
+  "copies": [
+    { "from": ".github/workflows/open-issue-from-review.yml", "to": ".github/workflows/open-issue-from-review.yml" },
+    { "from": "scripts/normalize-review-output.mjs", "to": "scripts/normalize-review-output.mjs" },
+    { "from": "scripts/parse-review-command.mjs", "to": "scripts/parse-review-command.mjs" },
+    { "from": "scripts/check-comment-permission.mjs", "to": "scripts/check-comment-permission.mjs" },
+    { "from": "scripts/select-review-finding.mjs", "to": "scripts/select-review-finding.mjs" }
+  ],
+  "localCommands": ["node scripts/select-review-finding.mjs review-findings.json 1"]
+}

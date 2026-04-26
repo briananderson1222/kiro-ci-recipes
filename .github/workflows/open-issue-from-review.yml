@@ -1,0 +1,82 @@
+name: Open Issue from Review
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  open-issue:
+    if: >-
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/open-issue')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse review finding and create issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+        run: |
+          if ! PERMISSION=$(gh api "repos/$REPO/collaborators/$COMMENT_AUTHOR/permission" --jq .permission); then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Unable to verify repository permission for \`/open-issue\`. No issue was created."
+            exit 0
+          fi
+
+          if ! node scripts/check-comment-permission.mjs "$PERMISSION"; then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Only repository collaborators with write, maintain, or admin permission can run \`/open-issue\`."
+            exit 0
+          fi
+
+          gh api "repos/$REPO/issues/comments/$COMMENT_ID" --jq .body > comment-body.txt
+          FINDING_NUM=$(node scripts/parse-review-command.mjs /open-issue --file comment-body.txt)
+          if [ -z "$FINDING_NUM" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Usage: \`/open-issue <number>\` where number matches a finding from the Kiro review."
+            exit 0
+          fi
+
+          COMMENT_CREATED="${{ github.event.comment.created_at }}"
+          REVIEW_BODY=$(gh api "repos/$REPO/pulls/$PR_NUMBER/reviews" --paginate \
+            --jq "[.[] | select(.body | contains(\"REVIEW_DATA\")) | select(.submitted_at < \"$COMMENT_CREATED\")] | last | .body" \
+            || true)
+
+          if [ -z "$REVIEW_BODY" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "No earlier Kiro review data found on this pull request. Run review again, then retry \`/open-issue <number>\`."
+            exit 0
+          fi
+
+          printf '%s\n' "$REVIEW_BODY" > review-body.md
+          node scripts/normalize-review-output.mjs review-body.md --json review-findings.json --markdown normalized-review.md --strict
+
+          if ! node scripts/select-review-finding.mjs review-findings.json "$FINDING_NUM" > selected-finding.json; then
+            TOTAL=$(node -e 'const fs=require("fs"); const data=JSON.parse(fs.readFileSync("review-findings.json","utf8")); console.log((data.findings||[]).length)')
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Finding #$FINDING_NUM not found. The latest Kiro review has $TOTAL finding(s)."
+            exit 0
+          fi
+
+          TITLE=$(node -e 'const fs=require("fs"); console.log(JSON.parse(fs.readFileSync("selected-finding.json","utf8")).title)')
+          SHORT_DESC=$(node -e 'const fs=require("fs"); console.log(JSON.parse(fs.readFileSync("selected-finding.json","utf8")).shortDescription)')
+          node -e 'const fs=require("fs"); const selected=JSON.parse(fs.readFileSync("selected-finding.json","utf8")); fs.writeFileSync("issue-body.md", `Found during Kiro review of PR #${process.env.PR_NUMBER}.\n\n${selected.body}\n\n---\nAuto-created from https://github.com/${process.env.REPO}/pull/${process.env.PR_NUMBER}.\n`)'
+
+          EXISTING=$(gh issue list --repo "$REPO" --label "code-review" --state open \
+            --search "Code review: ${SHORT_DESC}" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Finding #$FINDING_NUM is already tracked in issue #$EXISTING."
+            exit 0
+          fi
+
+          ISSUE_URL=$(gh issue create --repo "$REPO" \
+            --title "$TITLE" \
+            --body-file issue-body.md \
+            --label "code-review")
+
+          ISSUE_NUM="${ISSUE_URL##*/}"
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body "Created issue #$ISSUE_NUM for finding #$FINDING_NUM."

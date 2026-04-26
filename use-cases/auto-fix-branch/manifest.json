@@ -1,0 +1,22 @@
+{
+  "id": "auto-fix-branch",
+  "title": "Auto-Fix Branch",
+  "authority": "branch-write",
+  "requires": ["KIRO_API_KEY", "GH_TOKEN"],
+  "permissions": {
+    "contents": "write",
+    "pull-requests": "write"
+  },
+  "copies": [
+    { "from": ".github/workflows/kiro-auto-fix-branch.yml", "to": ".github/workflows/kiro-auto-fix-branch.yml" },
+    { "from": ".kiro/agents/fix-branch-writer.json", "to": ".kiro/agents/fix-branch-writer.json" },
+    { "from": "scripts/normalize-review-output.mjs", "to": "scripts/normalize-review-output.mjs" },
+    { "from": "scripts/parse-review-command.mjs", "to": "scripts/parse-review-command.mjs" },
+    { "from": "scripts/check-comment-permission.mjs", "to": "scripts/check-comment-permission.mjs" },
+    { "from": "scripts/select-review-finding.mjs", "to": "scripts/select-review-finding.mjs" }
+  ],
+  "localCommands": [
+    "PROMPT=$(node -e 'const fs=require(\"fs\"); const finding=fs.readFileSync(\"selected-finding.json\", \"utf8\"); process.stdout.write(`Fix exactly this normalized review finding in a minimal branch. Do not address unrelated issues.\\n\\n${finding}`);')",
+    "KIRO_API_KEY=... kiro-cli chat --no-interactive --trust-tools=read,grep,write --agent fix-branch-writer \"$PROMPT\""
+  ]
+}

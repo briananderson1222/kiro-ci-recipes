@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kiro CI Recipes - Use Cases</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1d252c;
+        --muted: #5d6873;
+        --line: #d7dde2;
+        --paper: #f8fafb;
+        --accent: #0f766e;
+        --warn: #9a3412;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: white;
+        line-height: 1.5;
+      }
+
+      header, main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+
+      header {
+        padding-top: 48px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 38px;
+        line-height: 1.1;
+      }
+
+      h2 {
+        margin-top: 36px;
+        font-size: 24px;
+      }
+
+      p {
+        max-width: 760px;
+      }
+
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      pre {
+        overflow-x: auto;
+        padding: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+        font-size: 15px;
+      }
+
+      th, td {
+        text-align: left;
+        vertical-align: top;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        background: var(--paper);
+      }
+
+      .tier {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .branch-write {
+        color: var(--warn);
+        border-color: #fed7aa;
+        background: #fff7ed;
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p><a href="index.html">Kiro CI Recipes</a></p>
+      <h1>Use-Case Catalog</h1>
+      <p>
+        Install recipes one at a time. Start with read-only review, then add blocking gates,
+        issue promotion, or opt-in branch writing only when the trust boundary is clear.
+      </p>
+    </header>
+
+    <main>
+      <h2>Recommended Adoption Path</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Recipe</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>artifact-review</code></td>
+            <td>Manual artifact-only review is the lowest-risk way to test prompts and output shape.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>pr-review</code>, <code>test-gap-finder</code>, <code>docs-drift</code></td>
+            <td>Advisory comments shift review left without blocking delivery.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>security-gate</code></td>
+            <td>Strict mode fails CI only after normalized critical findings are present.</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>issue-promotion</code></td>
+            <td>Maintainers can turn a numbered review finding into a tracked issue.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>auto-fix-branch</code></td>
+            <td>Higher-authority remediation stays opt-in and creates a separate reviewable branch.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Install Examples</h2>
+      <pre><code>./install.sh artifact-review
+./install.sh pr-review test-gap-finder docs-drift
+./install.sh security-gate
+./install.sh issue-promotion
+./install.sh auto-fix-branch</code></pre>
+
+      <h2>Recipe Details</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Use case</th>
+            <th>Authority</th>
+            <th>Command</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Advisory PR Review</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td><code>./install.sh pr-review</code></td>
+          </tr>
+          <tr>
+            <td>Security Gate</td>
+            <td><span class="tier">read-only-blocking</span></td>
+            <td><code>./install.sh security-gate</code></td>
+          </tr>
+          <tr>
+            <td>Manual Artifact Review</td>
+            <td><span class="tier">read-only-artifact</span></td>
+            <td><code>./install.sh artifact-review</code></td>
+          </tr>
+          <tr>
+            <td>Issue Promotion</td>
+            <td><span class="tier">issue-write</span></td>
+            <td><code>./install.sh issue-promotion</code></td>
+          </tr>
+          <tr>
+            <td>Test Gap Finder</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td><code>./install.sh test-gap-finder</code></td>
+          </tr>
+          <tr>
+            <td>Docs Drift Check</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td><code>./install.sh docs-drift</code></td>
+          </tr>
+          <tr>
+            <td>Auto-Fix Branch</td>
+            <td><span class="tier branch-write">branch-write</span></td>
+            <td><code>./install.sh auto-fix-branch</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

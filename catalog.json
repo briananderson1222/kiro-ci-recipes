@@ -1,0 +1,62 @@
+{
+  "name": "kiro-ci-recipes",
+  "description": "Installable Kiro CLI headless-mode CI use cases.",
+  "shared": {
+    "normalizer": [
+      "scripts/normalize-review-output.mjs",
+      "scripts/run-kiro-review.sh",
+      "scripts/run-local-review.sh",
+      "scripts/post-pr-review.sh",
+      "scripts/fail-on-critical.mjs",
+      "scripts/parse-review-command.mjs",
+      "scripts/check-comment-permission.mjs",
+      "scripts/select-review-finding.mjs",
+      ".kiro/skills/review-criteria/SKILL.md",
+      ".github/actions/kiro-review/action.yml"
+    ]
+  },
+  "useCases": [
+    {
+      "id": "pr-review",
+      "title": "Advisory PR Review",
+      "authority": "pull-request-comment",
+      "summary": "Post normalized Kiro findings as an advisory pull request review."
+    },
+    {
+      "id": "security-gate",
+      "title": "Security Gate",
+      "authority": "read-only-blocking",
+      "summary": "Run strict security review and fail on normalized critical findings."
+    },
+    {
+      "id": "artifact-review",
+      "title": "Manual Artifact Review",
+      "authority": "read-only-artifact",
+      "summary": "Run Kiro manually and upload normalized markdown/JSON artifacts."
+    },
+    {
+      "id": "issue-promotion",
+      "title": "Promote Review Finding to Issue",
+      "authority": "issue-write",
+      "summary": "Create a GitHub issue from a selected normalized Kiro review finding."
+    },
+    {
+      "id": "test-gap-finder",
+      "title": "Test Gap Finder",
+      "authority": "pull-request-comment",
+      "summary": "Ask Kiro to identify changed behavior that is not covered by tests."
+    },
+    {
+      "id": "docs-drift",
+      "title": "Docs Drift Check",
+      "authority": "pull-request-comment",
+      "summary": "Ask Kiro to flag code/API/CLI changes that should update docs."
+    },
+    {
+      "id": "auto-fix-branch",
+      "title": "Auto-Fix Branch",
+      "authority": "branch-write",
+      "summary": "Opt-in workflow that creates a standalone branch for a selected finding."
+    }
+  ]
+}

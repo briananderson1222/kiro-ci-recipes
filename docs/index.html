@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kiro CI Use Cases</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1d252c;
+        --muted: #5d6873;
+        --line: #d7dde2;
+        --paper: #f8fafb;
+        --accent: #0f766e;
+        --warn: #9a3412;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: white;
+        line-height: 1.5;
+      }
+
+      header, main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+
+      header {
+        padding-top: 56px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 42px;
+        line-height: 1.08;
+      }
+
+      h2 {
+        margin-top: 40px;
+        font-size: 26px;
+      }
+
+      p {
+        max-width: 760px;
+      }
+
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      pre {
+        overflow-x: auto;
+        padding: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+        font-size: 15px;
+      }
+
+      th, td {
+        text-align: left;
+        vertical-align: top;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        background: var(--paper);
+      }
+
+      .tier {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .branch-write {
+        color: var(--warn);
+        border-color: #fed7aa;
+        background: #fff7ed;
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Kiro CI Recipes</h1>
+      <p>
+        Copy only the AI-in-CI workflows you want: PR review, security gates, test gap review,
+        docs drift checks, issue promotion, artifact-only experiments, and opt-in fix branches.
+      </p>
+      <pre><code>./install.sh pr-review security-gate test-gap-finder</code></pre>
+    </header>
+
+    <main>
+      <h2>Use Cases</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Use case</th>
+            <th>Authority</th>
+            <th>What it does</th>
+            <th>Install</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Advisory PR Review</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td>Posts normalized Kiro findings as a non-blocking PR review.</td>
+            <td><code>./install.sh pr-review</code></td>
+          </tr>
+          <tr>
+            <td>Security Gate</td>
+            <td><span class="tier">read-only-blocking</span></td>
+            <td>Runs strict security review and fails on critical normalized findings.</td>
+            <td><code>./install.sh security-gate</code></td>
+          </tr>
+          <tr>
+            <td>Test Gap Finder</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td>Flags changed behavior that lacks direct regression coverage.</td>
+            <td><code>./install.sh test-gap-finder</code></td>
+          </tr>
+          <tr>
+            <td>Docs Drift Check</td>
+            <td><span class="tier">pull-request-comment</span></td>
+            <td>Flags code/API/CLI changes that should update documentation.</td>
+            <td><code>./install.sh docs-drift</code></td>
+          </tr>
+          <tr>
+            <td>Manual Artifact Review</td>
+            <td><span class="tier">read-only-artifact</span></td>
+            <td>Runs from workflow_dispatch and uploads markdown/JSON artifacts.</td>
+            <td><code>./install.sh artifact-review</code></td>
+          </tr>
+          <tr>
+            <td>Issue Promotion</td>
+            <td><span class="tier">issue-write</span></td>
+            <td>Turns <code>/open-issue &lt;n&gt;</code> into a tracked GitHub issue.</td>
+            <td><code>./install.sh issue-promotion</code></td>
+          </tr>
+          <tr>
+            <td>Auto-Fix Branch</td>
+            <td><span class="tier branch-write">branch-write</span></td>
+            <td>Creates an opt-in branch for <code>/kiro-fix &lt;n&gt;</code>.</td>
+            <td><code>./install.sh auto-fix-branch</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Shift Left Locally</h2>
+      <p>
+        Most packs install scripts that can run before CI. Use them to review your current diff,
+        normalize Kiro output, and test gates locally.
+      </p>
+      <pre><code>export KIRO_API_KEY=...
+./scripts/run-local-review.sh
+node scripts/fail-on-critical.mjs review-findings.json</code></pre>
+
+      <h2>Safety Model</h2>
+      <p>
+        Read-only workflows run Kiro with <code>--trust-tools=read,grep</code>. Branch-writing
+        workflows are opt-in and should be installed only after review-only workflows are proven.
+        PR workflows run trusted action code and agent configs from the base checkout while reviewing
+        PR code in a separate workspace.
+      </p>
+
+      <h2>Prototype Lessons</h2>
+      <p>
+        The recipes favor structured review data, permission-checked slash commands, and small
+        auditable agents. Avoid stale-comment success checks, broad shell tools for PR review agents,
+        and direct shell interpolation of comments, paths, PR titles, or workflow inputs.
+      </p>
+
+      <h2>Project Docs</h2>
+      <ul>
+        <li><a href="use-cases.html">Use-case catalog</a></li>
+        <li><a href="safety.html">Safety and slash-command model</a></li>
+        <li><a href="expected-findings.md">Expected sample findings</a></li>
+        <li><a href="release-checklist.md">Open-source release checklist</a></li>
+        <li><a href="https://github.com/briananderson1222/kiro-ci-recipes/blob/main/LICENSE">MIT license</a></li>
+        <li><a href="https://github.com/briananderson1222/kiro-ci-recipes">Repository README</a></li>
+      </ul>
+    </main>
+  </body>
+</html>

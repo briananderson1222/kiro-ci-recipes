@@ -1,0 +1,18 @@
+{
+  "id": "artifact-review",
+  "title": "Manual Artifact Review",
+  "authority": "read-only-artifact",
+  "requires": ["KIRO_API_KEY"],
+  "permissions": {
+    "contents": "read"
+  },
+  "copies": [
+    { "from": ".github/workflows/kiro-artifact-review.yml", "to": ".github/workflows/kiro-artifact-review.yml" },
+    { "from": ".github/actions/kiro-review/action.yml", "to": ".github/actions/kiro-review/action.yml" },
+    { "from": ".kiro/skills/review-criteria/SKILL.md", "to": ".kiro/skills/review-criteria/SKILL.md" },
+    { "from": ".kiro/agents/code-reviewer.json", "to": ".kiro/agents/code-reviewer.json" },
+    { "from": "scripts/normalize-review-output.mjs", "to": "scripts/normalize-review-output.mjs" },
+    { "from": "scripts/run-kiro-review.sh", "to": "scripts/run-kiro-review.sh" }
+  ],
+  "localCommands": ["KIRO_API_KEY=... ./scripts/run-kiro-review.sh --output-json review-findings.json --output-markdown review-output.md"]
+}

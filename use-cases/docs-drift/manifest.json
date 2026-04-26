@@ -1,0 +1,20 @@
+{
+  "id": "docs-drift",
+  "title": "Docs Drift Check",
+  "authority": "pull-request-comment",
+  "requires": ["KIRO_API_KEY"],
+  "permissions": {
+    "contents": "read",
+    "pull-requests": "write"
+  },
+  "copies": [
+    { "from": ".github/workflows/kiro-docs-drift.yml", "to": ".github/workflows/kiro-docs-drift.yml" },
+    { "from": ".github/actions/kiro-review/action.yml", "to": ".github/actions/kiro-review/action.yml" },
+    { "from": ".kiro/skills/review-criteria/SKILL.md", "to": ".kiro/skills/review-criteria/SKILL.md" },
+    { "from": ".kiro/agents/docs-drift-reviewer.json", "to": ".kiro/agents/docs-drift-reviewer.json" },
+    { "from": "scripts/normalize-review-output.mjs", "to": "scripts/normalize-review-output.mjs" },
+    { "from": "scripts/run-kiro-review.sh", "to": "scripts/run-kiro-review.sh" },
+    { "from": "scripts/post-pr-review.sh", "to": "scripts/post-pr-review.sh" }
+  ],
+  "localCommands": ["KIRO_API_KEY=... ./scripts/run-kiro-review.sh --agent docs-drift-reviewer --review-kind \"documentation drift review\""]
+}

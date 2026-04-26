@@ -1,0 +1,12 @@
+{
+  "name": "kiro-ci-recipes",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check src/app.js && node --check test/*.test.js && node --check scripts/*.mjs",
+    "catalog:list": "node scripts/install-use-case.mjs --list",
+    "catalog:dry-run": "node scripts/install-use-case.mjs --dry-run pr-review security-gate"
+  }
+}

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kiro CI Recipes - Safety</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1d252c;
+        --muted: #5d6873;
+        --line: #d7dde2;
+        --paper: #f8fafb;
+        --accent: #0f766e;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: white;
+        line-height: 1.5;
+      }
+
+      header, main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+
+      header {
+        padding-top: 48px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 38px;
+        line-height: 1.1;
+      }
+
+      h2 {
+        margin-top: 36px;
+        font-size: 24px;
+      }
+
+      p, li {
+        max-width: 780px;
+      }
+
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      pre {
+        overflow-x: auto;
+        padding: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+        font-size: 15px;
+      }
+
+      th, td {
+        text-align: left;
+        vertical-align: top;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        background: var(--paper);
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p><a href="index.html">Kiro CI Recipes</a></p>
+      <h1>Safety and Slash Commands</h1>
+      <p>
+        AI-in-CI workflows cross a real trust boundary. These recipes separate read-only review,
+        CI blocking, issue writing, and branch writing so teams can adopt only the authority they need.
+      </p>
+    </header>
+
+    <main>
+      <h2>Trust Boundary Rules</h2>
+      <ul>
+        <li>Run trusted workflow code, scripts, and Kiro agent configs from the base or default branch.</li>
+        <li>Review pull request code in a separate workspace.</li>
+        <li>Keep review agents on <code>--trust-tools=read,grep</code>.</li>
+        <li>Use strict normalization before any workflow turns a finding into a gate, issue, or fix branch.</li>
+        <li>Use current-run artifacts, timestamps, or run IDs instead of stale bot comments.</li>
+      </ul>
+
+      <h2>Slash Command Contract</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Authority</th>
+            <th>Required checks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/open-issue &lt;n&gt;</code></td>
+            <td>Creates a GitHub issue.</td>
+            <td>PR-only, write/maintain/admin commenter, file-based command parsing, structured <code>REVIEW_DATA</code>.</td>
+          </tr>
+          <tr>
+            <td><code>/kiro-fix &lt;n&gt;</code></td>
+            <td>Creates a branch and pull request.</td>
+            <td>PR-only, write/maintain/admin commenter, file-based command parsing, structured <code>REVIEW_DATA</code>, scoped write agent.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Shared Parsing</h2>
+      <p>
+        Both slash-command workflows use the same helper scripts:
+      </p>
+      <pre><code>node scripts/parse-review-command.mjs /open-issue --file comment-body.txt
+node scripts/parse-review-command.mjs /kiro-fix --file comment-body.txt
+node scripts/check-comment-permission.mjs write</code></pre>
+
+      <h2>Production Notes</h2>
+      <p>
+        The demo workflows use the public Kiro installer for readability. Production deployments should
+        pin or verify the installer, or install Kiro from an approved internal source before secrets are available.
+      </p>
+    </main>
+  </body>
+</html>

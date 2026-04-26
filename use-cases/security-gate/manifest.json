@@ -1,0 +1,22 @@
+{
+  "id": "security-gate",
+  "title": "Security Gate",
+  "authority": "read-only-blocking",
+  "requires": ["KIRO_API_KEY"],
+  "permissions": {
+    "contents": "read"
+  },
+  "copies": [
+    { "from": ".github/workflows/kiro-security-gate.yml", "to": ".github/workflows/kiro-security-gate.yml" },
+    { "from": ".github/actions/kiro-review/action.yml", "to": ".github/actions/kiro-review/action.yml" },
+    { "from": ".kiro/skills/review-criteria/SKILL.md", "to": ".kiro/skills/review-criteria/SKILL.md" },
+    { "from": ".kiro/agents/security-reviewer.json", "to": ".kiro/agents/security-reviewer.json" },
+    { "from": "scripts/normalize-review-output.mjs", "to": "scripts/normalize-review-output.mjs" },
+    { "from": "scripts/run-kiro-review.sh", "to": "scripts/run-kiro-review.sh" },
+    { "from": "scripts/fail-on-critical.mjs", "to": "scripts/fail-on-critical.mjs" }
+  ],
+  "localCommands": [
+    "KIRO_API_KEY=... ./scripts/run-kiro-review.sh --agent security-reviewer --review-kind \"security review\" --strict --output-json review-findings.json --output-markdown review-output.md",
+    "node scripts/fail-on-critical.mjs review-findings.json"
+  ]
+}
