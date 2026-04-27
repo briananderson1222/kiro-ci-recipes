@@ -2,6 +2,8 @@
 
 Installable examples for using Kiro CLI headless mode in CI/CD and local shift-left workflows.
 
+Documentation site: https://briananderson1222.github.io/kiro-ci-recipes/
+
 The goal is not one monolithic workflow. Each use case is a small pack you can copy into another repo without taking the whole catalog.
 
 ```bash
@@ -191,6 +193,6 @@ See `docs/expected-findings.md` for the intentional issues in the sample app.
 
 - `CONTRIBUTING.md`: contribution workflow and authority-tier rules.
 - `SECURITY.md`: security policy and CI workflow safety rules.
-- `docs/index.html`: GitHub Pages landing page.
+- `docs/index.html`: GitHub Pages landing page at https://briananderson1222.github.io/kiro-ci-recipes/.
 - `docs/release-checklist.md`: open-source release checklist.
 - `LICENSE`: MIT license.

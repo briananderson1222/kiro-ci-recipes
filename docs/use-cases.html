@@ -4,104 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Kiro CI Recipes - Use Cases</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --ink: #1d252c;
-        --muted: #5d6873;
-        --line: #d7dde2;
-        --paper: #f8fafb;
-        --accent: #0f766e;
-        --warn: #9a3412;
-      }
-
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color: var(--ink);
-        background: white;
-        line-height: 1.5;
-      }
-
-      header, main {
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: 32px 20px;
-      }
-
-      header {
-        padding-top: 48px;
-        border-bottom: 1px solid var(--line);
-      }
-
-      h1 {
-        margin: 0 0 12px;
-        font-size: 38px;
-        line-height: 1.1;
-      }
-
-      h2 {
-        margin-top: 36px;
-        font-size: 24px;
-      }
-
-      p {
-        max-width: 760px;
-      }
-
-      code, pre {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      }
-
-      pre {
-        overflow-x: auto;
-        padding: 16px;
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 18px 0;
-        font-size: 15px;
-      }
-
-      th, td {
-        text-align: left;
-        vertical-align: top;
-        padding: 12px;
-        border-bottom: 1px solid var(--line);
-      }
-
-      th {
-        background: var(--paper);
-      }
-
-      .tier {
-        display: inline-block;
-        padding: 2px 8px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        font-size: 13px;
-        color: var(--muted);
-      }
-
-      .branch-write {
-        color: var(--warn);
-        border-color: #fed7aa;
-        background: #fff7ed;
-      }
-
-      a {
-        color: var(--accent);
-      }
-    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js" defer></script>
   </head>
   <body>
     <header>
-      <p><a href="index.html">Kiro CI Recipes</a></p>
+      <div class="topline">
+        <a href="index.html">Kiro CI Recipes</a>
+        <button class="theme-toggle" type="button" data-theme-toggle>Dark mode</button>
+      </div>
       <h1>Use-Case Catalog</h1>
       <p>
         Install recipes one at a time. Start with read-only review, then add blocking gates,
